@@ -8,7 +8,7 @@ laytpl是一款颠覆性的JavaScript模板引擎，它用巧妙的实现方式�
 ![laytpl](http://sentsin.qiniudn.com/sentsinlaytpltuiguang.png)
 
 ## 优势
-1. 性能卓绝，执行速度比号称性能王的artTemplate、doT还要快将近1倍，比baiduTemplate、kissyTemplate等快20-40倍，数据规模和渲染频率越大越明显。（[性能测试](http://zz:100/layui/laytpl/test.html)）
+1. 性能卓绝，执行速度比号称性能王的artTemplate、doT还要快将近1倍，比baiduTemplate、kissyTemplate等快20-40倍，数据规模和渲染频率越大越明显。（[性能测试](http://sentsin.com/layui/laytpl/test.html)）
 2. 体积小到极致，不足1kb。
 3. 具备转义等安全机制，较科学的报错功能。
 4. 模版中可任意书写Native JavaScript，充分确保模版的灵活度。
@@ -17,14 +17,14 @@ laytpl是一款颠覆性的JavaScript模板引擎，它用巧妙的实现方式�
 
 ## 更新日志
 
-1.1 2014-08-16
+【1.1】 2014-08-16
 
 1. 优化引擎的核心算法，性能大幅度提升。
 2. 在不丧失功能的前提下，代码减少0.5kb
 3. 模版规则微调，通过d来读取字段，如：{{ d.title }}
 4. 修复缓存模版，并渲染不同数据时，视图不改变的bug
 
-1.0 2014-8-10（首个版本）
+【1.0】 2014-8-10（首个版本）
 
 ## 备注
 [官网](http://sentsin.com/layui/laytpl/)
