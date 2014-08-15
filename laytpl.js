@@ -1,0 +1,9 @@
+﻿/** 
+ 
+ @Name：laytpl-v1.1 精妙的js模板引擎 
+ @Author：贤心 - 2014-08-16
+ @Site：http://sentsin.com/layui/laytpl 
+ @License：MIT license
+ */
+ 
+;!function(){"use strict";var e,b={open:"{{",close:"}}"},c={exp:function(a){return new RegExp(a,"g")},query:function(a,d,e){var f=["#[^]+?","#|","[^]+?"][a||0];return c.exp((d||"")+b.open+f+b.close+(e||""))},escape:function(a){return String(a).replace(/&(?!#?[a-zA-Z0-9]+;)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/'/g,"&#39;").replace(/"/g,"&quot;")},error:function(a,b){var c="Laytpl Error：";return"object"==typeof console&&console.error(c+a+"\n"+(b||"")),c+a}},d=function(a){this.tpl=a};d.pt=d.prototype,d.pt.parse=function(a){var e=this,f=a;a=a.replace(/\n|\t|\r/g,"").replace(/(?=\"|\')/g,"\\").replace(c.query(),function(a){return a=a.replace(/\\"|\\'/g,'"'),'";'+a.replace(c.query(1,"^","$"),"")+'; view+="'}).replace(c.query(2),function(a){var d="^"+b.open,e="(";return c.exp(d+"=").test(a)&&(d+="=",e="_escape_("),a.replace(/\\"|\\'/g,'"').replace(c.exp(d),'"+'+e).replace(c.exp(b.close+"$"),')+"')}),a='"use strict";var view = "'+a+'";return view;';try{return e.cache=a=new Function("d, _escape_",a),a}catch(g){return delete e.cache,c.error(g,f)}},d.pt.render=function(a,b){var e,d=this;return a?(e=d.cache?d.cache:d.parse(d.tpl,a),b?(b(e(a,c.escape)),void 0):e(a,c.escape)):c.error("no data")},e=function(a){return"string"!=typeof a?c.error("Template not found"):new d(a)},e.config=function(a){a=a||{};for(var c in a)b[c]=a[c]},e.v="1.1","function"==typeof define?define(function(){return e}):"undefined"!=typeof exports?module.exports=e:window.laytpl=e}();
