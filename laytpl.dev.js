@@ -23,14 +23,14 @@ var tool = {
     //匹配满足规则内容
     query: function(type, _, __){
         var types = [
-            '#[^]+?',   //js语句
+            '#([^])*?',   //js语句
             '#|',   //语句开合
-            '[^]+?' //普通字段
+            '([^{#}])*?' //普通字段
         ][type || 0];
         return tool.exp((_||'') + config.open + types + config.close + (__||''));
     },   
     escape: function(html){
-        return String(html).replace(/&(?!#?[a-zA-Z0-9]+;)/g, '&amp;')
+        return String(html||'').replace(/&(?!#?[a-zA-Z0-9]+;)/g, '&amp;')
         .replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
     },
     error: function(e, tplog){
@@ -51,23 +51,26 @@ Tpl.pt.parse = function(tpl, data){
     var that = this, tplog = tpl;
 
     tpl = tpl.replace(/\n|\t|\r/g, '').replace(/(?=\"|\')/g, '\\').replace(tool.query(), function(str){
-        str = str.replace(/\\"|\\'/g, '\"');
+        str = str.replace(/\\"|\\'/g, '"');
         return '";' + str.replace(tool.query(1, '^', '$'), '') + '; view+="';
     }).replace(tool.query(2), function(str){
+        if(str.replace(/\s/g, '') === config.open+config.close){
+            return '';
+        }
         var sexp = '^'+config.open, start = '(';
         if(tool.exp(sexp+'=').test(str)){
             sexp += '=';
             start = '_escape_('
         }
-        return str.replace(/\\"|\\'/g, '"').replace(tool.exp(sexp), '"+' + start).replace(tool.exp(config.close + '$'), ')+"');
-        sexp = start = null;
+        str = str.replace(tool.exp(sexp), '"+' + start).replace(tool.exp(config.close + '$'), ')+"');
+        return str.replace(/\\"|\\'/g, '"'); 
     });
     
     tpl = '"use strict";var view = "' + tpl + '";return view;';
-    
+
     try{
         that.cache = tpl = new Function('d, _escape_', tpl);
-        return tpl;
+        return tpl(data, tool.escape);
     } catch(e){
         delete that.cache;
         return tool.error(e, tplog);
@@ -77,9 +80,9 @@ Tpl.pt.parse = function(tpl, data){
 Tpl.pt.render = function(data, callback){
     var that = this, tpl;
     if(!data) return tool.error('no data');
-    tpl = that.cache ? that.cache : that.parse(that.tpl, data);
-    if(!callback) return tpl(data, tool.escape);
-    callback(tpl(data, tool.escape));
+    tpl = that.cache ? that.cache(data, tool.escape) : that.parse(that.tpl, data);
+    if(!callback) return tpl;
+    callback(tpl);
 };
 
 var laytpl = function(tpl){
