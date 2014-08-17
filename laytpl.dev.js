@@ -23,11 +23,10 @@ var tool = {
     //匹配满足规则内容
     query: function(type, _, __){
         var types = [
-            '#([\\s\\S])*?',   //js语句
-            '#|',   //语句开合
+            '#([\\s\\S])+?',   //js语句
             '([^{#}])*?' //普通字段
         ][type || 0];
-        return tool.exp((_||'') + config.open + types + config.close + (__||''));
+        return exp((_||'') + config.open + types + config.close + (__||''));
     },   
     escape: function(html){
         return String(html||'').replace(/&(?!#?[a-zA-Z0-9]+;)/g, '&amp;')
@@ -40,7 +39,7 @@ var tool = {
     }
 };
 
-var Tpl = function(tpl){
+var exp = tool.exp, Tpl = function(tpl){
     this.tpl = tpl;
 };
 
@@ -49,21 +48,24 @@ Tpl.pt = Tpl.prototype;
 //核心引擎
 Tpl.pt.parse = function(tpl, data){
     var that = this, tplog = tpl;
-
-    tpl = tpl.replace(/\n|\t|\r/g, '').replace(/(?=\"|\')/g, '\\').replace(tool.query(), function(str){
-        str = str.replace(/\\"|\\'/g, '"');
-        return '";' + str.replace(tool.query(1, '^', '$'), '') + '; view+="';
-    }).replace(tool.query(2), function(str){
+    var jss = exp('^'+config.open+'#', ''), jsse = exp(config.close+'$', '');
+    
+    tpl = tpl.replace(/[\r\t\n]/g, ' ').replace(exp(config.open+'#'), config.open+'# ')
+    .replace(exp(config.close+'}'), '} '+config.close)
+    .replace(/(?="|')/g, '\\').replace(tool.query(), function(str){
+        str = str.replace(jss, '').replace(jsse, '');
+        return '";' + str.replace(/\\/g, '') + '; view+="';
+    }).replace(tool.query(1), function(str){
+        var start = '"+(';
         if(str.replace(/\s/g, '') === config.open+config.close){
             return '';
         }
-        var sexp = '^'+config.open, start = '(';
-        if(tool.exp(sexp+'=').test(str)){
-            sexp += '=';
-            start = '_escape_('
+        str = str.replace(exp(config.open+'|'+config.close), '');
+        if(/^=/.test(str)){
+            str = str.replace(/^=/, '');
+            start = '"+_escape_(';
         }
-        str = str.replace(tool.exp(sexp), '"+' + start).replace(tool.exp(config.close + '$'), ')+"');
-        return str.replace(/\\"|\\'/g, '"'); 
+        return start + str.replace(/\\/g, '') + ')+"';
     });
     
     tpl = '"use strict";var view = "' + tpl + '";return view;';
