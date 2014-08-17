@@ -51,7 +51,7 @@ Tpl.pt.parse = function(tpl, data){
     var jss = exp('^'+config.open+'#', ''), jsse = exp(config.close+'$', '');
     
     tpl = tpl.replace(/[\r\t\n]/g, ' ').replace(exp(config.open+'#'), config.open+'# ')
-    .replace(exp(config.close+'}'), '} '+config.close)
+    .replace(exp(config.close+'}'), '} '+config.close).replace(/\\/g, '\\\\')
     .replace(/(?="|')/g, '\\').replace(tool.query(), function(str){
         str = str.replace(jss, '').replace(jsse, '');
         return '";' + str.replace(/\\/g, '') + '; view+="';
@@ -69,7 +69,7 @@ Tpl.pt.parse = function(tpl, data){
     });
     
     tpl = '"use strict";var view = "' + tpl + '";return view;';
-
+    //console.log(tpl);
     try{
         that.cache = tpl = new Function('d, _escape_', tpl);
         return tpl(data, tool.escape);
