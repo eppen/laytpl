@@ -9,7 +9,7 @@ laytpl是一款颠覆性的JavaScript模板引擎，它用巧妙的实现方式�
 
 ## 优势
 1. 性能卓绝，执行速度比号称性能王的artTemplate、doT还要快将近1倍，比baiduTemplate、kissyTemplate等快20-40倍，数据规模和渲染频率越大越明显。（[性能测试](http://sentsin.com/layui/laytpl/test.html)）
-2. 体积小到极致，不足1kb。
+2. 体积小到极致，只有1kb。
 3. 具备转义等安全机制，较科学的报错功能。
 4. 模版中可任意书写Native JavaScript，充分确保模版的灵活度。
 5. 支持应用在Node.js平台。
