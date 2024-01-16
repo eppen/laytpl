@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laytpl Recursive Example</title>
+  <script src="laytpl.js"></script>
+</head>
+<body>
+  <script type="text/html" id="tpl">
+    {{# for(var i = 0; i < d.length; i++){ }}
+      <div>{{ d[i].name }}</div>
+      {{# if(d[i].children && d[i].children.length > 0){ }}
+        <div class="children">
+          {{ renderChild(d[i].children) }}
+        </div>
+      {{# } }}
+    {{# } }}
+  </script>
+
+  <div id="output"></div>
+
+  <script>
+    // 假设有一个包含嵌套数据的对象
+    var data = [
+      {
+        name: 'Item 1',
+        children: [
+          { name: 'Item 1.1', children: [] },
+          { name: 'Item 1.2', children: [] }
+        ]
+      },
+      {
+        name: 'Item 2',
+        children: [
+          { name: 'Item 2.1', children: [] },
+          { name: 'Item 2.2', children: [] }
+        ]
+      }
+    ];
+
+    // 定义一个函数来渲染子级
+    function renderChild(children) {
+      var tpl = document.getElementById('tpl').innerHTML;
+      return laytpl(tpl).render(children);
+    }
+
+    // 使用 Laytpl 渲染模板
+    var tpl = document.getElementById('tpl').innerHTML;
+    var output = document.getElementById('output');
+    var html = laytpl(tpl).render(data);
+    output.innerHTML = html;
+  </script>
+</body>
+</html>
